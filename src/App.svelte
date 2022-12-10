@@ -56,7 +56,7 @@
 <canvas class="fixed" on:click={addMass} bind:this={canvas} />
 
 <div
-  class="absolute flex-col bottom-5 left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-3"
+  class="absolute flex-col bottom-5 select-none left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-3"
 >
   <div class="flex-col">
     <div class="flex gap-4">
