@@ -21,12 +21,17 @@ export class Sim {
     setInterval(() => this.update(), 1000 / 60)
   }
 
+  reset() {
+    this.masses = []
+  }
+
   update() {
     // this.removeMassesOutsideCanvas()
     let deleted: number[] = []
     let new_masses: Mass[] = []
     for (const mass of this.masses) {
       if (deleted.includes(mass.id)) continue
+      if (mass.fixedPos) continue
       this.bounceMassesOffScreen(mass)
       let total_force_x = 0
       let total_force_y = 0
@@ -115,7 +120,8 @@ export class Sim {
       x: (m1 * mass1.pos.x + m2 * mass2.pos.x) / m,
       y: (m1 * mass1.pos.y + m2 * mass2.pos.y) / m,
     }
-    return new Mass({ pos: pos, vel: v, kg: m })
+    const fixedPos = m1 > m2 ? mass1.fixedPos : mass2.fixedPos
+    return new Mass({ pos: pos, vel: v, kg: m, fixedPos: fixedPos })
   }
 
   private draw() {

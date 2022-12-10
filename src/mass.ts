@@ -1,4 +1,5 @@
-import type { Vec2 } from "./vec2"
+import { baseKg } from './constant'
+import type { Vec2 } from './vec2'
 
 export class Mass {
   id: number
@@ -8,6 +9,7 @@ export class Mass {
   kg: number
   r: number
   isColliding: boolean
+  fixedPos: boolean
 
   static count = 0
 
@@ -16,6 +18,7 @@ export class Mass {
       kg: number
       pos: Vec2
       vel: Vec2
+      fixedPos: boolean
     }
   ) {
     this.id = Mass.count++
@@ -23,9 +26,10 @@ export class Mass {
     this.kg = config.kg
     this.vel = config.vel
     this.acc = { x: 0, y: 0 }
-    this.r = Math.log(this.kg / 500_000_000)
+    this.r = Math.log2(this.kg / (baseKg / 2))
     // this.r = 20
     this.isColliding = false
+    this.fixedPos = config.fixedPos
   }
 
   draw(ctx: CanvasRenderingContext2D) {
