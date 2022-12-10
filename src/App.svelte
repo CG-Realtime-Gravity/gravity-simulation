@@ -80,7 +80,7 @@
         fixedPos = false
       }}
       class:font-bold={!fixedPos}
-      class:underline={fixedPos}>No</button
+      class:underline={!fixedPos}>No</button
     >
   </div>
 </div>
