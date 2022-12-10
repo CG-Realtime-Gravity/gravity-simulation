@@ -7,11 +7,16 @@ export class Sim {
   private ctx: CanvasRenderingContext2D
   private canvas: HTMLCanvasElement
   private mode: Mode = "normal"
+  private running = true
 
   constructor() {}
 
   setMode(mode: Mode) {
     this.mode = mode
+  }
+
+  setRunning(running: boolean) {
+    this.running = running
   }
 
   addMass(mass: Mass) {
@@ -34,6 +39,10 @@ export class Sim {
 
   update() {
     // this.removeMassesOutsideCanvas()
+    if (!this.running) {
+      this.draw()
+      return
+    }
     let deleted: number[] = []
     let new_masses: Mass[] = []
     for (const mass of this.masses) {

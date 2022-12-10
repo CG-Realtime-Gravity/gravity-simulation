@@ -26,6 +26,9 @@
   let mode: Mode = 'normal'
   const modes: Mode[] = ['normal', 'combine']
 
+  let running = 'play'
+  const runningOptions = ['play', 'pause']
+
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
@@ -152,6 +155,19 @@
         }}
         class:font-bold={m === mode}
         class:underline={m === mode}>{m}</button
+      >
+    {/each}
+  </div>
+  <div class="flex gap-4">
+    <h1>Running</h1>
+    {#each runningOptions as r}
+      <button
+        on:click={() => {
+          sim.setRunning(r === 'play')
+          running = r
+        }}
+        class:font-bold={r === running}
+        class:underline={r === running}>{r}</button
       >
     {/each}
   </div>
