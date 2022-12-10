@@ -8,21 +8,24 @@ export class Mass {
   kg: number
   r: number
   isColliding: boolean
+  fixedPos: boolean
 
   constructor(
     public config: {
       kg: number
       pos: Vec2
       vel: Vec2
+      fixedPos: boolean
     }
   ) {
     this.pos = config.pos
     this.kg = config.kg
     this.vel = config.vel
     this.acc = { x: 0, y: 0 }
-    this.r = Math.log2(this.kg / baseKg / 2)
+    this.r = Math.log2(this.kg / (baseKg / 2))
     // this.r = 20
     this.isColliding = false
+    this.fixedPos = config.fixedPos
   }
 
   draw(ctx: CanvasRenderingContext2D) {
