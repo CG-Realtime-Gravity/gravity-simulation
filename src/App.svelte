@@ -3,11 +3,12 @@
   import { baseKg } from './constant'
   import { Mass } from './mass'
   import { Sim, type Mode } from './sim'
+  import Icon from '@iconify/svelte';
 
   type Direction = 'up' | 'down' | 'left' | 'right'
 
   let canvas: HTMLCanvasElement
-  let sim: Sim
+  const sim = new Sim()
 
   let dragging = false
 
@@ -26,8 +27,8 @@
   let mode: Mode = 'normal'
   const modes: Mode[] = ['normal', 'combine']
 
-  let running = 'play'
-  const runningOptions = ['play', 'pause']
+  let running = true
+  $: sim.setRunning(running)
 
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
@@ -52,7 +53,6 @@
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    sim = new Sim()
     sim.start(canvas, ctx)
   })
 </script>
@@ -160,16 +160,16 @@
   </div>
   <div class="flex gap-4">
     <h1>Running</h1>
-    {#each runningOptions as r}
-      <button
-        on:click={() => {
-          sim.setRunning(r === 'play')
-          running = r
-        }}
-        class:font-bold={r === running}
-        class:underline={r === running}>{r}</button
-      >
-    {/each}
+    <button
+      on:click={() => {
+        console.log('eiei')
+        running = !running
+      }}
+    >
+      <Icon icon={running === false? 'material-symbols:play-arrow-outline-rounded' : 'material-symbols:pause-outline-rounded'} 
+        class="text-2xl"
+      />
+    </button>
   </div>
   <button on:click={() => sim.reset()} class="flex w-content">clear</button>
 </div>
