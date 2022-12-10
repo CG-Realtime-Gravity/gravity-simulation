@@ -48,20 +48,23 @@
 <canvas class="fixed" on:click={addMass} bind:this={canvas} />
 
 <div
-  class="absolute flex-col bottom-5 left-5 bg-white/10 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2"
+  class="absolute flex-col bottom-5 left-5 bg-white/10 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-3"
 >
-  <div class="flex gap-4">
-    <h1>Mass</h1>
-    {#each kgMultiplierOptions as mul}
-      <button
-        on:click={() => {
-          kgMultiplier = mul
-          fixedPos = false
-        }}
-        class:font-bold={mul === kgMultiplier}
-        class:underline={mul === kgMultiplier}>x{mul}</button
-      >
-    {/each}
+  <div class="flex-col">
+    <div class="flex gap-4">
+      <h1>Mass</h1>
+      {#each kgMultiplierOptions as mul}
+        <button
+          on:click={() => {
+            kgMultiplier = mul
+            fixedPos = false
+          }}
+          class:font-bold={mul === kgMultiplier}
+          class:underline={mul === kgMultiplier}>x{mul}</button
+        >
+      {/each}
+    </div>
+    <span>base mass {baseKg.toLocaleString('en-US')} kg</span>
   </div>
   <div class="flex gap-4">
     <h1>Fixed Position</h1>
