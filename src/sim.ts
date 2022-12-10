@@ -116,10 +116,7 @@ export class Sim {
       x: (m1 * v1.x + m2 * v2.x) / m,
       y: (m1 * v1.y + m2 * v2.y) / m,
     }
-    const pos = {
-      x: (m1 * mass1.pos.x + m2 * mass2.pos.x) / m,
-      y: (m1 * mass1.pos.y + m2 * mass2.pos.y) / m,
-    }
+    const pos = m1 > m2 ? mass1.pos : mass2.pos
     const fixedPos = m1 > m2 ? mass1.fixedPos : mass2.fixedPos
     return new Mass({ pos: pos, vel: v, kg: m, fixedPos: fixedPos })
   }
