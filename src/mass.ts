@@ -1,3 +1,4 @@
+import { baseKg } from './constant'
 import type { Vec2 } from './vec2'
 
 export class Mass {
@@ -19,7 +20,7 @@ export class Mass {
     this.kg = config.kg
     this.vel = config.vel
     this.acc = { x: 0, y: 0 }
-    this.r = Math.log(this.kg / 500_000_000)
+    this.r = Math.log2(this.kg / baseKg / 2)
     // this.r = 20
     this.isColliding = false
   }
