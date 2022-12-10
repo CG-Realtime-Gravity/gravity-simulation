@@ -21,6 +21,10 @@ export class Sim {
     setInterval(() => this.update(), 1000 / 60)
   }
 
+  reset() {
+    this.masses = []
+  }
+
   update() {
     // this.removeMassesOutsideCanvas()
     for (const mass of this.masses) {

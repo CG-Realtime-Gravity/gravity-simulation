@@ -117,4 +117,5 @@
       {/each}
     </div>
   </div>
+  <button on:click={() => sim.reset()} class="flex w-content">clear</button>
 </div>
