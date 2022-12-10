@@ -19,7 +19,7 @@ export class Mass {
     this.kg = config.kg
     this.vel = config.vel
     this.acc = { x: 0, y: 0 }
-    this.r = Math.log(this.kg / 100_000_000)
+    this.r = Math.log(this.kg / 500_000_000)
     // this.r = 20
     this.isColliding = false
   }

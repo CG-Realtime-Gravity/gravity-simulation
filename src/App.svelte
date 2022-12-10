@@ -6,6 +6,8 @@
   let canvas: HTMLCanvasElement
   let sim: Sim
 
+  const baseKg = 200_000_000_000
+
   const addMass = (
     e: MouseEvent & {
       currentTarget: EventTarget & HTMLCanvasElement
@@ -18,7 +20,7 @@
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
         },
-        kg: 200_000_000_00,
+        kg: baseKg,
         vel: {
           x: 0,
           y: 0,
