@@ -54,7 +54,10 @@
     <h1>Mass</h1>
     {#each kgMultiplierOptions as mul}
       <button
-        on:click={() => (kgMultiplier = mul)}
+        on:click={() => {
+          kgMultiplier = mul
+          fixedPos = false
+        }}
         class:font-bold={mul === kgMultiplier}
         class:underline={mul === kgMultiplier}>x{mul}</button
       >
