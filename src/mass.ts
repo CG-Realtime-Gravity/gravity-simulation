@@ -2,6 +2,7 @@ import { baseKg } from './constant'
 import type { Vec2 } from './vec2'
 
 export class Mass {
+  id: number
   pos: Vec2
   vel: Vec2
   acc: Vec2
@@ -9,6 +10,8 @@ export class Mass {
   r: number
   isColliding: boolean
   fixedPos: boolean
+
+  static count = 0
 
   constructor(
     public config: {
@@ -18,6 +21,7 @@ export class Mass {
       fixedPos: boolean
     }
   ) {
+    this.id = Mass.count++
     this.pos = config.pos
     this.kg = config.kg
     this.vel = config.vel
@@ -31,7 +35,7 @@ export class Mass {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath()
     ctx.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2)
-    ctx.fillStyle = this.isColliding ? 'red' : 'white'
+    ctx.fillStyle = this.isColliding ? "red" : "white"
     ctx.fill()
   }
 }
