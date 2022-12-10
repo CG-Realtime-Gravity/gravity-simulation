@@ -88,81 +88,81 @@
 >
   <div class="flex-col">
     <div class="flex gap-4">
-      <h1>Mass</h1>
+      <h1 class="font-bold">Mass:</h1>
       {#each kgMultiplierOptions as mul}
         <button
           on:click={() => {
             kgMultiplier = mul
             fixedPos = false
           }}
-          class:font-bold={mul === kgMultiplier}
-          class:underline={mul === kgMultiplier}>x{mul}</button
+          class={mul === kgMultiplier ? 'text-black' : 'text-black/30'}
+          >x{mul}</button
         >
       {/each}
     </div>
-    <span>base mass {baseKg.toLocaleString('en-US')} kg</span>
+    <span class="text-sm">base mass {baseKg.toLocaleString('en-US')} kg</span>
   </div>
   <div class="flex gap-4">
-    <h1>Fixed Position</h1>
+    <h1 class="font-bold">Fixed Position:</h1>
     <button
       on:click={() => {
         fixedPos = true
       }}
-      class:font-bold={fixedPos}
-      class:underline={fixedPos}>Yes</button
+      class={fixedPos ? 'text-black' : 'text-black/30'}
+      >Yes</button
     >
     <button
       on:click={() => {
         fixedPos = false
       }}
-      class:font-bold={!fixedPos}
-      class:underline={!fixedPos}>No</button
+      class={!fixedPos ? 'text-black' : 'text-black/30'}
+      >No</button
     >
   </div>
-  <div class="flex-col">
     <div class="flex gap-4">
-      <h1>Speed</h1>
+      <h1 class="font-bold">Speed:</h1>
       {#each speedOptions as sp}
         <button
           on:click={() => {
             speed = sp
           }}
-          class:font-bold={sp === speed}
-          class:underline={sp === speed}>{sp}</button
+          class={sp === speed ? 'text-black' : 'text-black/30'}
+          >{sp}</button
         >
       {/each}
     </div>
     <div class="flex gap-4">
-      <h1>Direction</h1>
+      <h1 class="font-bold">Direction:</h1>
       {#each directions as dir}
         <button
           on:click={() => {
             direction = dir
           }}
-          class:font-bold={dir === direction}
-          class:underline={dir === direction}>{dir}</button
-        >
+          >
+          <Icon 
+            icon={dir === 'up' ? 'material-symbols:arrow-upward-rounded' : dir === 'down' ? 'material-symbols:arrow-downward-rounded' : dir === 'left' ? 'material-symbols:arrow-back-rounded' : 'material-symbols:arrow-forward-rounded'}
+            class={`text-2xl ${dir === direction?'text-black':'text-black/30'}`}
+          />
+        </button>
       {/each}
     </div>
-  </div>
   <div class="flex gap-4">
-    <h1>Mode</h1>
+    <h1 class="font-bold">Mode:</h1>
     {#each modes as m}
       <button
         on:click={() => {
           sim.setMode(m)
           mode = m
         }}
-        class:font-bold={m === mode}
-        class:underline={m === mode}>{m}</button
+        class={m === mode ? 'text-black' : 'text-black/30'}
+        >{m}</button
       >
     {/each}
   </div>
   <div class="flex gap-4">
-    <h1>Running</h1>
+    <h1 class="font-bold">Simulation:</h1>
     <button
       on:click={() => {
-        console.log('eiei')
         running = !running
       }}
     >
