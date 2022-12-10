@@ -4,6 +4,8 @@
   import { Mass } from './mass'
   import { Sim } from './sim'
 
+  type Direction = 'up' | 'down' | 'left' | 'right'
+
   let canvas: HTMLCanvasElement
   let sim: Sim
 
@@ -12,6 +14,12 @@
   $: kg = baseKg * kgMultiplier
 
   let fixedPos = false
+
+  let direction: Direction = 'left'
+  const directions: Direction[] = ['up', 'down', 'left', 'right']
+
+  let speed = 0
+  const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 5]
 
   const addMass = (
     e: MouseEvent & {
@@ -27,8 +35,8 @@
         },
         kg,
         vel: {
-          x: 0,
-          y: 0,
+          x: direction === 'left' ? -speed : direction === 'right' ? speed : 0,
+          y: direction === 'up' ? -speed : direction === 'down' ? speed : 0,
         },
         fixedPos,
       })
@@ -82,5 +90,31 @@
       class:font-bold={!fixedPos}
       class:underline={!fixedPos}>No</button
     >
+  </div>
+  <div class="flex-col">
+    <div class="flex gap-4">
+      <h1>Speed</h1>
+      {#each speedOptions as sp}
+        <button
+          on:click={() => {
+            speed = sp
+          }}
+          class:font-bold={sp === speed}
+          class:underline={sp === speed}>{sp}</button
+        >
+      {/each}
+    </div>
+    <div class="flex gap-4">
+      <h1>Direction</h1>
+      {#each directions as dir}
+        <button
+          on:click={() => {
+            direction = dir
+          }}
+          class:font-bold={dir === direction}
+          class:underline={dir === direction}>{dir}</button
+        >
+      {/each}
+    </div>
   </div>
 </div>
