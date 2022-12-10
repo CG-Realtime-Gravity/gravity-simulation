@@ -2,8 +2,8 @@
   import { onMount } from 'svelte'
   import { baseKg } from './constant'
   import { Mass } from './mass'
-  import { Sim, type Mode } from './sim'
-  import Icon from '@iconify/svelte';
+  import { Sim, type ColorMode, type Mode } from './sim'
+  import Icon from '@iconify/svelte'
 
   type Direction = 'up' | 'down' | 'left' | 'right'
 
@@ -29,6 +29,12 @@
 
   let running = true
   $: sim.setRunning(running)
+
+  const colorModes: ColorMode[] = ['size', 'gravity']
+  let colorMode: ColorMode = colorModes[0]
+  $: {
+    sim.setColorMode(colorMode)
+  }
 
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
@@ -166,10 +172,25 @@
         running = !running
       }}
     >
-      <Icon icon={running === false? 'material-symbols:play-arrow-outline-rounded' : 'material-symbols:pause-outline-rounded'} 
+      <Icon
+        icon={running === false
+          ? 'material-symbols:play-arrow-outline-rounded'
+          : 'material-symbols:pause-outline-rounded'}
         class="text-2xl"
       />
     </button>
+  </div>
+  <div class="flex gap-4">
+    <h1>Coloring</h1>
+    {#each colorModes as m}
+      <button
+        on:click={() => {
+          colorMode = m
+        }}
+        class:font-bold={m === colorMode}
+        class:underline={m === colorMode}>{m}</button
+      >
+    {/each}
   </div>
   <button on:click={() => sim.reset()} class="flex w-content">clear</button>
 </div>
