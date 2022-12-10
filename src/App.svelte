@@ -11,7 +11,6 @@
       currentTarget: EventTarget & HTMLCanvasElement
     }
   ) => {
-    console.log(e.screenX, e.screenY)
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
       new Mass({
@@ -21,7 +20,7 @@
         },
         kg: 200_000_000_00,
         vel: {
-          x: 2,
+          x: 0,
           y: 0,
         },
       })
@@ -34,20 +33,6 @@
     canvas.height = window.innerHeight
 
     sim = new Sim()
-    let rect = canvas.getBoundingClientRect()
-    sim.addMass(
-      new Mass({
-        pos: {
-          x: canvas.width / 2,
-          y: canvas.height / 2,
-        },
-        kg: 200_000_000_000_00,
-        vel: {
-          x: 0,
-          y: 0,
-        },
-      })
-    )
     sim.start(canvas, ctx)
   })
 </script>
