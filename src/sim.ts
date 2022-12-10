@@ -1,6 +1,7 @@
 import { Mass } from "./mass"
 
 export type Mode = "normal" | "combine"
+export type ColorMode = "size" | "gravity"
 
 export class Sim {
   private masses: Mass[] = []
@@ -8,11 +9,18 @@ export class Sim {
   private canvas: HTMLCanvasElement
   private mode: Mode = "normal"
   private running = true
+  private colorMode: ColorMode = "size"
+  private resultantMin: number | null = null
+  private resultantMax: number | null = null
 
   constructor() {}
 
   setMode(mode: Mode) {
     this.mode = mode
+  }
+
+  setColorMode(mode: ColorMode) {
+    this.colorMode = mode
   }
 
   setRunning(running: boolean) {
@@ -43,6 +51,10 @@ export class Sim {
       this.draw()
       return
     }
+
+    let forceMin: number | null = null
+    let forceMax: number | null = null
+
     let deleted: number[] = []
     let new_masses: Mass[] = []
     for (const mass of this.masses) {
@@ -82,7 +94,20 @@ export class Sim {
       mass.vel.y += mass.acc.y
       mass.acc.x = total_force_x / mass.kg
       mass.acc.y = total_force_y / mass.kg
+
+      const resultant = Math.sqrt(
+        Math.pow(total_force_x, 2) + Math.pow(total_force_y, 2)
+      )
+
+      mass.resultant = resultant
+
+      if (forceMin === null || forceMin > resultant) forceMin = resultant
+      if (forceMax === null || forceMax < resultant) forceMax = resultant
     }
+
+    this.resultantMin = forceMin
+    this.resultantMax = forceMax
+
     this.masses = this.masses.filter((mass) => !deleted.includes(mass.id))
     this.masses = this.masses.concat(new_masses)
     new_masses = []
@@ -141,7 +166,7 @@ export class Sim {
   private draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for (const mass of this.masses) {
-      mass.draw(this.ctx)
+      mass.draw(this.ctx, this.colorMode, this.resultantMin, this.resultantMax)
     }
   }
 }

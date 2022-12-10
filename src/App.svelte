@@ -2,12 +2,12 @@
   import { onMount } from 'svelte'
   import { baseKg } from './constant'
   import { Mass } from './mass'
-  import { Sim, type Mode } from './sim'
+  import { Sim, type ColorMode, type Mode } from './sim'
 
   type Direction = 'up' | 'down' | 'left' | 'right'
 
   let canvas: HTMLCanvasElement
-  let sim: Sim
+  const sim = new Sim()
 
   let dragging = false
 
@@ -28,6 +28,12 @@
 
   let running = 'play'
   const runningOptions = ['play', 'pause']
+
+  const colorModes: ColorMode[] = ['size', 'gravity']
+  let colorMode: ColorMode = colorModes[0]
+  $: {
+    sim.setColorMode(colorMode)
+  }
 
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
@@ -52,7 +58,6 @@
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    sim = new Sim()
     sim.start(canvas, ctx)
   })
 </script>
@@ -168,6 +173,18 @@
         }}
         class:font-bold={r === running}
         class:underline={r === running}>{r}</button
+      >
+    {/each}
+  </div>
+  <div class="flex gap-4">
+    <h1>Coloring</h1>
+    {#each colorModes as m}
+      <button
+        on:click={() => {
+          colorMode = m
+        }}
+        class:font-bold={m === colorMode}
+        class:underline={m === colorMode}>{m}</button
       >
     {/each}
   </div>
