@@ -22,6 +22,7 @@ export class Sim {
   }
 
   update() {
+    this.removeMassesOutsideCanvas()
     for (const mass of this.masses) {
       for (const other_mass of this.masses) {
         if (mass.pos.x === other_mass.pos.x && mass.pos.y == other_mass.pos.y)
@@ -36,6 +37,17 @@ export class Sim {
       mass.vel.y += mass.acc.y
     }
     this.draw()
+  }
+
+  private removeMassesOutsideCanvas() {
+    this.masses = this.masses.filter((mass) => {
+      return (
+        mass.pos.x > 0 &&
+        mass.pos.x < this.canvas.width &&
+        mass.pos.y > 0 &&
+        mass.pos.y < this.canvas.height
+      )
+    })
   }
 
   private calc_force(mass1: Mass, mass2: Mass) {
