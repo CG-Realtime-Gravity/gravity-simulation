@@ -36,6 +36,11 @@
     sim.setColorMode(colorMode)
   }
 
+  let particleCount = 0
+  sim.setParticleCountOnChange((count) => {
+    particleCount = count
+  })
+
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
@@ -117,15 +122,13 @@
           on:click={() => {
             fixedPos = true
           }}
-          class={fixedPos ? 'text-black' : 'text-black/30'}
-          >Yes</button
+          class={fixedPos ? 'text-black' : 'text-black/30'}>Yes</button
         >
         <button
           on:click={() => {
             fixedPos = false
           }}
-          class={!fixedPos ? 'text-black' : 'text-black/30'}
-          >No</button
+          class={!fixedPos ? 'text-black' : 'text-black/30'}>No</button
         >
       </div>
     </div>
@@ -137,8 +140,7 @@
             on:click={() => {
               speed = sp
             }}
-            class={sp === speed ? 'text-black' : 'text-black/30'}
-            >{sp}</button
+            class={sp === speed ? 'text-black' : 'text-black/30'}>{sp}</button
           >
         {/each}
       </div>
@@ -151,10 +153,18 @@
             on:click={() => {
               direction = dir
             }}
-            >
-            <Icon 
-              icon={dir === 'up' ? 'material-symbols:arrow-upward-rounded' : dir === 'down' ? 'material-symbols:arrow-downward-rounded' : dir === 'left' ? 'material-symbols:arrow-back-rounded' : 'material-symbols:arrow-forward-rounded'}
-              class={`text-2xl ${dir === direction?'text-black':'text-black/30'}`}
+          >
+            <Icon
+              icon={dir === 'up'
+                ? 'material-symbols:arrow-upward-rounded'
+                : dir === 'down'
+                ? 'material-symbols:arrow-downward-rounded'
+                : dir === 'left'
+                ? 'material-symbols:arrow-back-rounded'
+                : 'material-symbols:arrow-forward-rounded'}
+              class={`text-2xl ${
+                dir === direction ? 'text-black' : 'text-black/30'
+              }`}
             />
           </button>
         {/each}
@@ -172,8 +182,7 @@
               sim.setMode(m)
               mode = m
             }}
-            class={m === mode ? 'text-black' : 'text-black/30'}
-            >{m}</button
+            class={m === mode ? 'text-black' : 'text-black/30'}>{m}</button
           >
         {/each}
       </div>
@@ -203,12 +212,17 @@
             on:click={() => {
               colorMode = m
             }}
-            class={m === colorMode ? 'text-black' : 'text-black/30'}
-            >{m}</button
+            class={m === colorMode ? 'text-black' : 'text-black/30'}>{m}</button
           >
         {/each}
       </div>
     </div>
-    <button on:click={() => sim.reset()} class="flex w-content text-red-500">clear</button>
+    <button on:click={() => sim.reset()} class="flex w-content text-red-500"
+      >clear</button
+    >
   </div>
 </div>
+
+<span class="absolute bottom-5 select-none right-5 text-white/90">
+  Particle count: {particleCount.toLocaleString('en-US')}
+</span>

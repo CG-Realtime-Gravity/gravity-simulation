@@ -12,6 +12,7 @@ export class Sim {
   private colorMode: ColorMode = "size"
   private resultantMin: number | null = null
   private resultantMax: number | null = null
+  private particleCountOnChange: (count: number) => void = () => {}
 
   constructor() {}
 
@@ -29,10 +30,7 @@ export class Sim {
 
   addMass(mass: Mass) {
     this.masses.push(mass)
-  }
-
-  addMassMany(masses: Mass[]) {
-    this.masses.push(...masses)
+    this.particleCountOnChange(this.masses.length)
   }
 
   start(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -45,12 +43,18 @@ export class Sim {
     this.masses = []
   }
 
+  setParticleCountOnChange(cb: (count: number) => void) {
+    this.particleCountOnChange = cb
+  }
+
   update() {
     // this.removeMassesOutsideCanvas()
     if (!this.running) {
       this.draw()
       return
     }
+
+    const beforeParticleCount = this.masses.length
 
     let forceMin: number | null = null
     let forceMax: number | null = null
@@ -112,6 +116,11 @@ export class Sim {
     this.masses = this.masses.concat(new_masses)
     new_masses = []
     this.draw()
+
+    const afterParticleCount = this.masses.length
+    if (beforeParticleCount !== afterParticleCount) {
+      this.particleCountOnChange(afterParticleCount)
+    }
   }
 
   private removeMassesOutsideCanvas() {
