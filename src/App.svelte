@@ -3,6 +3,7 @@
   import { baseKg } from './constant'
   import { Mass } from './mass'
   import { Sim, type ColorMode, type Mode } from './sim'
+  import Icon from '@iconify/svelte'
 
   type Direction = 'up' | 'down' | 'left' | 'right'
 
@@ -26,8 +27,8 @@
   let mode: Mode = 'normal'
   const modes: Mode[] = ['normal', 'combine']
 
-  let running = 'play'
-  const runningOptions = ['play', 'pause']
+  let running = true
+  $: sim.setRunning(running)
 
   const colorModes: ColorMode[] = ['size', 'gravity']
   let colorMode: ColorMode = colorModes[0]
@@ -165,16 +166,19 @@
   </div>
   <div class="flex gap-4">
     <h1>Running</h1>
-    {#each runningOptions as r}
-      <button
-        on:click={() => {
-          sim.setRunning(r === 'play')
-          running = r
-        }}
-        class:font-bold={r === running}
-        class:underline={r === running}>{r}</button
-      >
-    {/each}
+    <button
+      on:click={() => {
+        console.log('eiei')
+        running = !running
+      }}
+    >
+      <Icon
+        icon={running === false
+          ? 'material-symbols:play-arrow-outline-rounded'
+          : 'material-symbols:pause-outline-rounded'}
+        class="text-2xl"
+      />
+    </button>
   </div>
   <div class="flex gap-4">
     <h1>Coloring</h1>
