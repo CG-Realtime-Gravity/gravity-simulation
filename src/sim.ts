@@ -51,7 +51,6 @@ export class Sim {
       this.bounceMassesOffScreen(mass)
       let total_force_x = 0
       let total_force_y = 0
-      mass.isColliding = false
       for (const other_mass of this.masses) {
         if (deleted.includes(mass.id)) break
         if (deleted.includes(other_mass.id)) continue

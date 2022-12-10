@@ -1,5 +1,5 @@
-import { baseKg } from './constant'
-import type { Vec2 } from './vec2'
+import { baseKg } from "./constant"
+import type { Vec2 } from "./vec2"
 
 export class Mass {
   id: number
@@ -8,7 +8,6 @@ export class Mass {
   acc: Vec2
   kg: number
   r: number
-  isColliding: boolean
   fixedPos: boolean
 
   static count = 0
@@ -28,14 +27,16 @@ export class Mass {
     this.acc = { x: 0, y: 0 }
     this.r = Math.log2(this.kg / (baseKg / 2))
     // this.r = 20
-    this.isColliding = false
     this.fixedPos = config.fixedPos
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    let hue = Math.floor(((this.r - 1) / (20 - 1)) * 330)
+    if (hue > 330) hue = 330
+    if (hue < 0) hue = 0
     ctx.beginPath()
     ctx.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2)
-    ctx.fillStyle = this.isColliding ? "red" : "white"
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
     ctx.fill()
   }
 }
