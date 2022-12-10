@@ -90,107 +90,125 @@
 />
 
 <div
-  class="absolute flex-col bottom-5 select-none left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-3"
+  class="absolute flex-col bottom-5 select-none left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-5"
 >
-  <div class="flex-col">
-    <div class="flex gap-4">
-      <h1 class="font-bold">Mass:</h1>
-      {#each kgMultiplierOptions as mul}
+  <div class="flex-col space-y-2">
+    <h1 class="font-bold text-lg">Particle Configuration</h1>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Mass:</h2>
+        {#each kgMultiplierOptions as mul}
+          <button
+            on:click={() => {
+              kgMultiplier = mul
+              fixedPos = false
+            }}
+            class={mul === kgMultiplier ? 'text-black' : 'text-black/30'}
+            >x{mul}</button
+          >
+        {/each}
+      </div>
+      <span class="text-sm">base mass {baseKg.toLocaleString('en-US')} kg</span>
+    </div>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Fixed Position:</h2>
         <button
           on:click={() => {
-            kgMultiplier = mul
+            fixedPos = true
+          }}
+          class={fixedPos ? 'text-black' : 'text-black/30'}
+          >Yes</button
+        >
+        <button
+          on:click={() => {
             fixedPos = false
           }}
-          class={mul === kgMultiplier ? 'text-black' : 'text-black/30'}
-          >x{mul}</button
+          class={!fixedPos ? 'text-black' : 'text-black/30'}
+          >No</button
         >
-      {/each}
+      </div>
     </div>
-    <span class="text-sm">base mass {baseKg.toLocaleString('en-US')} kg</span>
-  </div>
-  <div class="flex gap-4">
-    <h1 class="font-bold">Fixed Position:</h1>
-    <button
-      on:click={() => {
-        fixedPos = true
-      }}
-      class={fixedPos ? 'text-black' : 'text-black/30'}
-      >Yes</button
-    >
-    <button
-      on:click={() => {
-        fixedPos = false
-      }}
-      class={!fixedPos ? 'text-black' : 'text-black/30'}
-      >No</button
-    >
-  </div>
-    <div class="flex gap-4">
-      <h1 class="font-bold">Speed:</h1>
-      {#each speedOptions as sp}
-        <button
-          on:click={() => {
-            speed = sp
-          }}
-          class={sp === speed ? 'text-black' : 'text-black/30'}
-          >{sp}</button
-        >
-      {/each}
-    </div>
-    <div class="flex gap-4">
-      <h1 class="font-bold">Direction:</h1>
-      {#each directions as dir}
-        <button
-          on:click={() => {
-            direction = dir
-          }}
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Speed:</h2>
+        {#each speedOptions as sp}
+          <button
+            on:click={() => {
+              speed = sp
+            }}
+            class={sp === speed ? 'text-black' : 'text-black/30'}
+            >{sp}</button
           >
-          <Icon 
-            icon={dir === 'up' ? 'material-symbols:arrow-upward-rounded' : dir === 'down' ? 'material-symbols:arrow-downward-rounded' : dir === 'left' ? 'material-symbols:arrow-back-rounded' : 'material-symbols:arrow-forward-rounded'}
-            class={`text-2xl ${dir === direction?'text-black':'text-black/30'}`}
+        {/each}
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Direction:</h2>
+        {#each directions as dir}
+          <button
+            on:click={() => {
+              direction = dir
+            }}
+            >
+            <Icon 
+              icon={dir === 'up' ? 'material-symbols:arrow-upward-rounded' : dir === 'down' ? 'material-symbols:arrow-downward-rounded' : dir === 'left' ? 'material-symbols:arrow-back-rounded' : 'material-symbols:arrow-forward-rounded'}
+              class={`text-2xl ${dir === direction?'text-black':'text-black/30'}`}
+            />
+          </button>
+        {/each}
+      </div>
+    </div>
+  </div>
+  <div class="flex-col space-y-2">
+    <h1 class="font-bold text-lg">Simulation Configuration</h1>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Mode:</h2>
+        {#each modes as m}
+          <button
+            on:click={() => {
+              sim.setMode(m)
+              mode = m
+            }}
+            class={m === mode ? 'text-black' : 'text-black/30'}
+            >{m}</button
+          >
+        {/each}
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Simulation:</h2>
+        <button
+          on:click={() => {
+            running = !running
+          }}
+        >
+          <Icon
+            icon={running === false
+              ? 'material-symbols:play-arrow-outline-rounded'
+              : 'material-symbols:pause-outline-rounded'}
+            class="text-2xl"
           />
         </button>
-      {/each}
+      </div>
     </div>
-  <div class="flex gap-4">
-    <h1 class="font-bold">Mode:</h1>
-    {#each modes as m}
-      <button
-        on:click={() => {
-          sim.setMode(m)
-          mode = m
-        }}
-        class={m === mode ? 'text-black' : 'text-black/30'}
-        >{m}</button
-      >
-    {/each}
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Coloring:</h2>
+        {#each colorModes as m}
+          <button
+            on:click={() => {
+              colorMode = m
+            }}
+            class={m === colorMode ? 'text-black' : 'text-black/30'}
+            >{m}</button
+          >
+        {/each}
+      </div>
+    </div>
+    <button on:click={() => sim.reset()} class="flex w-content text-red-500">clear</button>
   </div>
-  <div class="flex gap-4">
-    <h1 class="font-bold">Simulation:</h1>
-    <button
-      on:click={() => {
-        running = !running
-      }}
-    >
-      <Icon
-        icon={running === false
-          ? 'material-symbols:play-arrow-outline-rounded'
-          : 'material-symbols:pause-outline-rounded'}
-        class="text-2xl"
-      />
-    </button>
-  </div>
-  <div class="flex gap-4">
-    <h1>Coloring</h1>
-    {#each colorModes as m}
-      <button
-        on:click={() => {
-          colorMode = m
-        }}
-        class:font-bold={m === colorMode}
-        class:underline={m === colorMode}>{m}</button
-      >
-    {/each}
-  </div>
-  <button on:click={() => sim.reset()} class="flex w-content">clear</button>
 </div>
