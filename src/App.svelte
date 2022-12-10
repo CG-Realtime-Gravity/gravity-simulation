@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { baseKg } from './constant'
   import { Mass } from './mass'
-  import { Sim } from './sim'
+  import { Sim, type Mode } from './sim'
 
   type Direction = 'up' | 'down' | 'left' | 'right'
 
@@ -22,6 +22,9 @@
 
   let speed = 0
   const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 5]
+
+  let mode: Mode = 'normal'
+  const modes: Mode[] = ['normal', 'combine']
 
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
@@ -138,6 +141,19 @@
         >
       {/each}
     </div>
+  </div>
+  <div class="flex gap-4">
+    <h1>Mode</h1>
+    {#each modes as m}
+      <button
+        on:click={() => {
+          sim.setMode(m)
+          mode = m
+        }}
+        class:font-bold={m === mode}
+        class:underline={m === mode}>{m}</button
+      >
+    {/each}
   </div>
   <button on:click={() => sim.reset()} class="flex w-content">clear</button>
 </div>

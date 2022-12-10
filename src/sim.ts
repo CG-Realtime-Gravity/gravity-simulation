@@ -1,11 +1,18 @@
 import { Mass } from "./mass"
 
+export type Mode = "normal" | "combine"
+
 export class Sim {
   private masses: Mass[] = []
   private ctx: CanvasRenderingContext2D
   private canvas: HTMLCanvasElement
+  private mode: Mode = "normal"
 
   constructor() {}
+
+  setMode(mode: Mode) {
+    this.mode = mode
+  }
 
   addMass(mass: Mass) {
     this.masses.push(mass)
@@ -41,17 +48,19 @@ export class Sim {
         if (deleted.includes(other_mass.id)) continue
         if (mass.id === other_mass.id) continue
         // check if mass collides with other_mass
-        const r = Math.sqrt(
-          Math.pow(mass.pos.x - other_mass.pos.x, 2) +
-            Math.pow(mass.pos.y - other_mass.pos.y, 2)
-        )
-        const max_r = mass.r + other_mass.r
-        if (r <= max_r) {
-          // combine masses
-          new_masses.push(this.combineMasses(mass, other_mass))
-          deleted.push(other_mass.id)
-          deleted.push(mass.id)
-          continue
+        if (this.mode === "combine") {
+          const r = Math.sqrt(
+            Math.pow(mass.pos.x - other_mass.pos.x, 2) +
+              Math.pow(mass.pos.y - other_mass.pos.y, 2)
+          )
+          const max_r = mass.r + other_mass.r
+          if (r <= max_r) {
+            // combine masses
+            new_masses.push(this.combineMasses(mass, other_mass))
+            deleted.push(other_mass.id)
+            deleted.push(mass.id)
+            continue
+          }
         }
         const { force_x, force_y } = this.calc_force(mass, other_mass)
         total_force_x += force_x
