@@ -106,7 +106,6 @@
           <button
             on:click={() => {
               kgMultiplier = mul
-              fixedPos = false
             }}
             class={mul === kgMultiplier ? 'text-black' : 'text-black/30'}
             >x{mul}</button
