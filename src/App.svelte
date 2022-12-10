@@ -9,6 +9,8 @@
   let canvas: HTMLCanvasElement
   let sim: Sim
 
+  let dragging = false
+
   const kgMultiplierOptions = [1, 5, 10, 50, 100, 500, 1000, 100000]
   let kgMultiplier = kgMultiplierOptions[0]
   $: kg = baseKg * kgMultiplier
@@ -21,17 +23,13 @@
   let speed = 0
   const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 5]
 
-  const addMass = (
-    e: MouseEvent & {
-      currentTarget: EventTarget & HTMLCanvasElement
-    }
-  ) => {
+  const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
       new Mass({
         pos: {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
+          x: clientX - rect.left,
+          y: clientY - rect.top,
         },
         kg,
         vel: {
@@ -53,7 +51,31 @@
   })
 </script>
 
-<canvas class="fixed" on:click={addMass} bind:this={canvas} />
+<canvas
+  on:mousedown={() => {
+    dragging = true
+  }}
+  on:mouseup={() => {
+    dragging = false
+  }}
+  on:mousemove={(e) => {
+    if (dragging) addMass(e.clientX, e.clientY)
+  }}
+  on:touchstart={() => {
+    dragging = true
+  }}
+  on:touchend={() => {
+    dragging = false
+  }}
+  on:touchmove={(e) => {
+    if (dragging) addMass(e.touches[0].clientX, e.touches[0].clientY)
+  }}
+  class="fixed"
+  on:click={(e) => {
+    addMass(e.clientX, e.clientY)
+  }}
+  bind:this={canvas}
+/>
 
 <div
   class="absolute flex-col bottom-5 select-none left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-3"
