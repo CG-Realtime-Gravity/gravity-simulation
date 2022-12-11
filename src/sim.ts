@@ -37,7 +37,7 @@ export class Sim {
   start(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.ctx = ctx
     this.canvas = canvas
-    setInterval(() => this.update(), 1000 / 60)
+    setInterval(() => this.update(), 1000 / 1000)
   }
 
   reset() {
@@ -65,37 +65,42 @@ export class Sim {
     for (const mass of this.masses) {
       if (deleted.includes(mass.id)) continue
       if (mass.fixedPos) continue
-      const total_force = new Vec2(0, 0)
-      for (const other_mass of this.masses) {
-        if (deleted.includes(mass.id)) break
-        if (deleted.includes(other_mass.id)) continue
-        if (mass.id === other_mass.id) continue
-        // check if mass collides with other_mass
-        if (this.mode === "combine") {
-          const r = mass.pos.distanceFrom(other_mass.pos)
-          const max_r = mass.r + other_mass.r
-          if (r <= max_r) {
-            // combine masses
-            new_masses.push(this.combineMasses(mass, other_mass))
-            deleted.push(other_mass.id)
-            deleted.push(mass.id)
-            continue
-          }
-        }
-        total_force.addBy(this.calc_force(mass, other_mass))
-      }
+      // const total_force = new Vec2(0, 0)
+      // for (const other_mass of this.masses) {
+      //   if (deleted.includes(mass.id)) break
+      //   if (deleted.includes(other_mass.id)) continue
+      //   if (mass.id === other_mass.id) continue
+      //   // check if mass collides with other_mass
+      //   if (this.mode === "combine") {
+      //     const r = mass.pos.distanceFrom(other_mass.pos)
+      //     const max_r = mass.r + other_mass.r
+      //     if (r <= max_r) {
+      //       // combine masses
+      //       new_masses.push(this.combineMasses(mass, other_mass))
+      //       deleted.push(other_mass.id)
+      //       deleted.push(mass.id)
+      //       continue
+      //     }
+      //   }
+      //   total_force.addBy(this.calc_force(mass, other_mass))
+      // }
 
-      mass.pos.addBy(mass.vel)
-      mass.vel.addBy(mass.acc)
-      total_force.divScalarBy(mass.kg)
-      mass.acc = total_force
+      // mass.pos.addBy(mass.vel)
+      // mass.vel.addBy(mass.acc)
+      // total_force.divScalarBy(mass.kg)
+      // mass.acc = total_force
 
-      mass.resultant = total_force.abs()
+      // mass.resultant = total_force.abs()
 
-      if (forceMin === null || forceMin > mass.resultant)
-        forceMin = mass.resultant
-      if (forceMax === null || forceMax < mass.resultant)
-        forceMax = mass.resultant
+      // if (forceMin === null || forceMin > mass.resultant)
+      //   forceMin = mass.resultant
+      // if (forceMax === null || forceMax < mass.resultant)
+      //   forceMax = mass.resultant
+      this.rkIterate(mass, this.masses)
+    }
+
+    for (const mass of this.masses) {
+      mass.updatePos()
     }
 
     this.resultantMin = forceMin
@@ -112,6 +117,20 @@ export class Sim {
     }
   }
 
+  private rkIterate(mass: Mass, masses: Mass[]) {
+    // update mass acc
+    const k1 = this.calcAccel(mass, mass.pos, masses)
+    const k2 = this.calcAccel(mass, mass.pos.add(k1.mulScalar(0.5)), masses)
+    const k3 = this.calcAccel(mass, mass.pos.add(k2.mulScalar(0.5)), masses)
+    const k4 = this.calcAccel(mass, mass.pos.add(k3), masses)
+    const acc = k1
+      .add(k2.mulScalar(2))
+      .add(k3.mulScalar(2))
+      .add(k4)
+      .divScalar(6)
+    mass.acc = acc
+  }
+
   private removeMassesOutsideCanvas() {
     this.masses = this.masses.filter((mass) => {
       return (
@@ -121,6 +140,16 @@ export class Sim {
         mass.pos.y < this.canvas.height
       )
     })
+  }
+
+  private calcAccel(mass: Mass, pos: Vec2, masses: Mass[]): Vec2 {
+    const total_force = new Vec2(0, 0)
+    for (const other_mass of masses) {
+      if (mass.id === other_mass.id) continue
+      const force = this.calc_force(mass, other_mass)
+      total_force.addBy(force)
+    }
+    return total_force.divScalar(mass.kg)
   }
 
   private calc_force(mass1: Mass, mass2: Mass): Vec2 {
