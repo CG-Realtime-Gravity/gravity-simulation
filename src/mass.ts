@@ -11,8 +11,8 @@ export class Mass {
   r: number
   fixedPos: boolean
   resultant: number
-  // deltaV: Vec2
-  // deltaX: Vec2
+  deltaV: Vec2
+  deltaX: Vec2
 
   static count = 0
 
@@ -33,14 +33,16 @@ export class Mass {
     // this.r = 20
     this.fixedPos = config.fixedPos
     this.resultant = 0
-    // this.deltaV = new Vec2(0, 0)
-    // this.deltaX = new Vec2(0, 0)
+    this.deltaV = new Vec2(0, 0)
+    this.deltaX = new Vec2(0, 0)
   }
 
   updatePos() {
     if (this.fixedPos) return
-    this.pos.addBy(this.vel)
-    this.vel.addBy(this.acc)
+    // this.pos.addBy(this.vel)
+    // this.vel.addBy(this.acc)
+    this.pos.addBy(this.deltaX)
+    this.vel.addBy(this.deltaV)
   }
 
   draw(

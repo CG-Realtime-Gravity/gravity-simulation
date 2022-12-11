@@ -96,7 +96,8 @@ export class Sim {
       //   forceMin = mass.resultant
       // if (forceMax === null || forceMax < mass.resultant)
       //   forceMax = mass.resultant
-      this.rkIterate(mass, this.masses)
+      // this.rkIterate(mass, this.masses)
+      this.eulerIterate(mass, this.masses)
     }
 
     for (const mass of this.masses) {
@@ -129,6 +130,12 @@ export class Sim {
       .add(k4)
       .divScalar(6)
     mass.acc = acc
+  }
+
+  private eulerIterate(mass: Mass, masses: Mass[]) {
+    const accel = this.calcAccel(mass, mass.pos, masses)
+    mass.deltaV = accel
+    mass.deltaX = mass.vel.add(accel)
   }
 
   private removeMassesOutsideCanvas() {

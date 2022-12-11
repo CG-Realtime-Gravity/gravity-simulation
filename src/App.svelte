@@ -63,6 +63,23 @@
     canvas.height = window.innerHeight
 
     sim.start(canvas, ctx)
+
+    sim.addMass(
+      new Mass({
+        fixedPos: false,
+        kg: baseKg * 100,
+        pos: new Vec2(canvas.width / 2, canvas.height / 2),
+        vel: new Vec2(0, 0),
+      })
+    )
+    sim.addMass(
+      new Mass({
+        fixedPos: false,
+        kg: 5,
+        pos: new Vec2(canvas.width / 2, canvas.height / 2 + 300),
+        vel: new Vec2(0.5, 0),
+      })
+    )
   })
 </script>
 
