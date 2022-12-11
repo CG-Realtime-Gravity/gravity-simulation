@@ -1,4 +1,5 @@
 import { Mass } from "./mass"
+import { Vec2 } from "./vec2"
 
 export type Mode = "normal" | "combine"
 export type ColorMode = "size" | "gravity"
@@ -64,19 +65,14 @@ export class Sim {
     for (const mass of this.masses) {
       if (deleted.includes(mass.id)) continue
       if (mass.fixedPos) continue
-      // this.bounceMassesOffScreen(mass)
-      let total_force_x = 0
-      let total_force_y = 0
+      const total_force = new Vec2(0, 0)
       for (const other_mass of this.masses) {
         if (deleted.includes(mass.id)) break
         if (deleted.includes(other_mass.id)) continue
         if (mass.id === other_mass.id) continue
         // check if mass collides with other_mass
         if (this.mode === "combine") {
-          const r = Math.sqrt(
-            Math.pow(mass.pos.x - other_mass.pos.x, 2) +
-              Math.pow(mass.pos.y - other_mass.pos.y, 2)
-          )
+          const r = mass.pos.distanceFrom(other_mass.pos)
           const max_r = mass.r + other_mass.r
           if (r <= max_r) {
             // combine masses
@@ -86,27 +82,20 @@ export class Sim {
             continue
           }
         }
-        const { force_x, force_y } = this.calc_force(mass, other_mass)
-        total_force_x += force_x
-        total_force_y += force_y
+        total_force.addBy(this.calc_force(mass, other_mass))
       }
-      mass.pos.x += mass.vel.x
-      mass.pos.y += mass.vel.y
-      mass.pos.x += mass.vel.x
-      mass.pos.y += mass.vel.y
-      mass.vel.x += mass.acc.x
-      mass.vel.y += mass.acc.y
-      mass.acc.x = total_force_x / mass.kg
-      mass.acc.y = total_force_y / mass.kg
 
-      const resultant = Math.sqrt(
-        Math.pow(total_force_x, 2) + Math.pow(total_force_y, 2)
-      )
+      mass.pos.addBy(mass.vel)
+      mass.vel.addBy(mass.acc)
+      total_force.divScalarBy(mass.kg)
+      mass.acc = total_force
 
-      mass.resultant = resultant
+      mass.resultant = total_force.abs()
 
-      if (forceMin === null || forceMin > resultant) forceMin = resultant
-      if (forceMax === null || forceMax < resultant) forceMax = resultant
+      if (forceMin === null || forceMin > mass.resultant)
+        forceMin = mass.resultant
+      if (forceMax === null || forceMax < mass.resultant)
+        forceMax = mass.resultant
     }
 
     this.resultantMin = forceMin
@@ -134,21 +123,19 @@ export class Sim {
     })
   }
 
-  private calc_force(mass1: Mass, mass2: Mass) {
+  private calc_force(mass1: Mass, mass2: Mass): Vec2 {
     // Gm1m2/r^2
     const m1 = mass1.kg
     const m2 = mass2.kg
-    const r_squared =
-      Math.pow(mass1.pos.x - mass2.pos.x, 2) +
-      Math.pow(mass1.pos.y - mass2.pos.y, 2)
-    if (r_squared < mass1.r + mass2.r) return { force_x: 0, force_y: 0 }
+    const r_squared = mass1.pos.distanceFromSq(mass2.pos)
+    if (r_squared < mass1.r + mass2.r) return new Vec2(0, 0)
     const r = Math.sqrt(r_squared)
     // normalize G to 1 for performance
     const G = 1
     const force = (G * m1 * m2) / r_squared
     const force_x = (force * (mass2.pos.x - mass1.pos.x)) / r
     const force_y = (force * (mass2.pos.y - mass1.pos.y)) / r
-    return { force_x, force_y }
+    return new Vec2(force_x, force_y)
   }
 
   private bounceMassesOffScreen(mass: Mass) {
@@ -164,10 +151,7 @@ export class Sim {
     const m = m1 + m2
     const v1 = mass1.vel
     const v2 = mass2.vel
-    const v = {
-      x: (m1 * v1.x + m2 * v2.x) / m,
-      y: (m1 * v1.y + m2 * v2.y) / m,
-    }
+    const v = new Vec2((m1 * v1.x + m2 * v2.x) / m, (m1 * v1.y + m2 * v2.y) / m)
     const pos = m1 > m2 ? mass1.pos : mass2.pos
     const fixedPos = m1 > m2 ? mass1.fixedPos : mass2.fixedPos
     return new Mass({ pos: pos, vel: v, kg: m, fixedPos: fixedPos })

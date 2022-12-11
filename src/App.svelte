@@ -4,6 +4,7 @@
   import { Mass } from "./mass"
   import { Sim, type ColorMode, type Mode } from "./sim"
   import Icon from "@iconify/svelte"
+  import { Vec2 } from "./vec2"
 
   type Direction = "up" | "down" | "left" | "right"
 
@@ -45,15 +46,12 @@
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
       new Mass({
-        pos: {
-          x: clientX - rect.left,
-          y: clientY - rect.top,
-        },
+        pos: new Vec2(clientX - rect.left, clientY - rect.top),
         kg,
-        vel: {
-          x: direction === "left" ? -speed : direction === "right" ? speed : 0,
-          y: direction === "up" ? -speed : direction === "down" ? speed : 0,
-        },
+        vel: new Vec2(
+          direction === "left" ? -speed : direction === "right" ? speed : 0,
+          direction === "up" ? -speed : direction === "down" ? speed : 0
+        ),
         fixedPos,
       })
     )

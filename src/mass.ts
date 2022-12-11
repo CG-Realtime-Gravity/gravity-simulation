@@ -1,6 +1,6 @@
 import { baseKg } from "./constant"
 import type { ColorMode } from "./sim"
-import type { Vec2 } from "./vec2"
+import { Vec2 } from "./vec2"
 
 export class Mass {
   id: number
@@ -26,7 +26,7 @@ export class Mass {
     this.pos = config.pos
     this.kg = config.kg
     this.vel = config.vel
-    this.acc = { x: 0, y: 0 }
+    this.acc = new Vec2(0, 0)
     this.r = Math.log2(this.kg / (baseKg / 2))
     // this.r = 20
     this.fixedPos = config.fixedPos
