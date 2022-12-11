@@ -93,9 +93,12 @@ export class Mass {
         const scaledMin = Math.log2(accelMin)
         const scaledMax = Math.log2(accelMax)
         const scaledAcc = Math.log2(this.acc_abs)
-        hue = Math.floor(
-          ((scaledAcc - scaledMin) / (scaledMax - scaledMin)) * 330
-        )
+        const scaledDiff = scaledMax - scaledMin
+        if (scaledDiff === 0) {
+          hue = 0
+        } else {
+          hue = Math.floor(((scaledAcc - scaledMin) / scaledDiff) * 330)
+        }
       }
       console.log(hue)
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`

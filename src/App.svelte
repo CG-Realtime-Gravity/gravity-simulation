@@ -31,7 +31,7 @@
   let running = true
   $: sim.setRunning(running)
 
-  const colorModes: ColorMode[] = ["size", "acceleration"]
+  const colorModes: ColorMode[] = ["acceleration", "size"]
   let colorMode: ColorMode = colorModes[0]
   $: {
     sim.setColorMode(colorMode)
