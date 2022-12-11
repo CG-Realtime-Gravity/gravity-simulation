@@ -13,6 +13,7 @@ export class Mass {
   acc_abs: number
   deltaV: Vec2
   deltaX: Vec2
+  history: [number, Vec2][]
 
   static count = 0
 
@@ -35,14 +36,44 @@ export class Mass {
     this.acc_abs = 0
     this.deltaV = new Vec2(0, 0)
     this.deltaX = new Vec2(0, 0)
+    this.history = []
   }
 
-  updatePos() {
+  clearHistory() {
+    this.history = []
+  }
+
+  updatePos(
+    canvas: HTMLCanvasElement,
+    elapsedTime: number,
+    useHistory: boolean,
+    historyLength: number
+  ) {
     if (this.fixedPos) return
-    // this.pos.addBy(this.vel)
-    // this.vel.addBy(this.acc)
     this.pos.addBy(this.deltaX)
     this.vel.addBy(this.deltaV)
+
+    if (this.history.length > 1) {
+      const [firstTime] = this.history[0]
+      if (elapsedTime - firstTime > historyLength) {
+        this.history.shift()
+      }
+    }
+
+    // check if out of screen
+    if (
+      this.pos.x < 0 ||
+      this.pos.x > canvas.width ||
+      this.pos.y < 0 ||
+      this.pos.y > canvas.height
+    ) {
+      return
+    }
+
+    if (!useHistory) return
+
+    this.history.push([elapsedTime, this.pos.clone()])
+    // shift history if the elapsed time passes 1000 from the first element
   }
 
   draw(
@@ -74,5 +105,15 @@ export class Mass {
     ctx.beginPath()
     ctx.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2)
     ctx.fill()
+
+    for (const h of this.history) {
+      // draw history
+      ctx.strokeStyle = "white"
+      ctx.beginPath()
+      // draw thin line
+      ctx.lineWidth = 0.1
+      ctx.arc(h[1].x, h[1].y, 1, 0, 2 * Math.PI)
+      ctx.stroke()
+    }
   }
 }

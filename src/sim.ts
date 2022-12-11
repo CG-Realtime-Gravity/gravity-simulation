@@ -15,11 +15,27 @@ export class Sim {
   private accelMin = 0
   private accelMax = 0
   private particleCountOnChange: (count: number) => void = () => {}
+  private drawHistory = true
+  private elapsedTime = 0
+  private historyLen = 100
 
   constructor() {}
 
   setMode(mode: Mode) {
     this.mode = mode
+  }
+
+  setDrawHistory(drawHistory: boolean) {
+    this.drawHistory = drawHistory
+  }
+
+  setHistoryLength(len: number) {
+    if (len !== this.historyLen) {
+      for (const mass of this.masses) {
+        mass.clearHistory()
+      }
+    }
+    this.historyLen = len
   }
 
   setColorMode(mode: ColorMode) {
@@ -38,7 +54,10 @@ export class Sim {
   start(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.ctx = ctx
     this.canvas = canvas
-    setInterval(() => this.update(), 1)
+    setInterval(() => {
+      this.update()
+      this.elapsedTime += 1
+    }, 1)
   }
 
   reset() {
@@ -101,7 +120,12 @@ export class Sim {
     }
 
     for (const mass of this.masses) {
-      mass.updatePos()
+      mass.updatePos(
+        this.canvas,
+        this.elapsedTime,
+        this.drawHistory,
+        this.historyLen
+      )
     }
 
     this.accelMin = accelAbsMin
@@ -119,8 +143,8 @@ export class Sim {
   }
 
   private removeMassesIfTooFar() {
-    const tooFarX = this.canvas.width * 4
-    const tooFarY = this.canvas.height * 4
+    const tooFarX = this.canvas.width * 3
+    const tooFarY = this.canvas.height * 3
     const before = this.masses.length
     this.masses = this.masses.filter((mass) => {
       return Math.abs(mass.pos.x) < tooFarX && Math.abs(mass.pos.y) < tooFarY

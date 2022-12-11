@@ -42,6 +42,12 @@
     particleCount = count
   })
 
+  let drawHistory = true
+  $: sim.setDrawHistory(drawHistory)
+  const historyLenOptions = [100, 250, 500, 1000]
+  let historyLen = historyLenOptions[0]
+  $: sim.setHistoryLength(historyLen)
+
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
@@ -226,6 +232,35 @@
               colorMode = m
             }}
             class={m === colorMode ? "text-black" : "text-black/30"}>{m}</button
+          >
+        {/each}
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">History:</h2>
+        <button
+          on:click={() => {
+            drawHistory = true
+          }}
+          class={drawHistory ? "text-black" : "text-black/30"}>Yes</button
+        >
+        <button
+          on:click={() => {
+            drawHistory = false
+          }}
+          class={!drawHistory ? "text-black" : "text-black/30"}>No</button
+        >
+      </div>
+      <div class="flex gap-4">
+        <span class="font-bold">History length</span>
+        {#each historyLenOptions as l}
+          <button
+            on:click={() => {
+              historyLen = l
+            }}
+            class={l === historyLen ? "text-black" : "text-black/30"}
+            >{l}</button
           >
         {/each}
       </div>
