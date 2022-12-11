@@ -48,7 +48,7 @@ export class Sim {
   }
 
   update() {
-    // this.removeMassesOutsideCanvas()
+    this.removeMassesOutsideCanvas()
     if (!this.running) {
       this.draw()
       return
@@ -64,7 +64,7 @@ export class Sim {
     for (const mass of this.masses) {
       if (deleted.includes(mass.id)) continue
       if (mass.fixedPos) continue
-      this.bounceMassesOffScreen(mass)
+      // this.bounceMassesOffScreen(mass)
       let total_force_x = 0
       let total_force_y = 0
       for (const other_mass of this.masses) {
@@ -136,14 +136,15 @@ export class Sim {
 
   private calc_force(mass1: Mass, mass2: Mass) {
     // Gm1m2/r^2
-    const G = 6.67408e-11
     const m1 = mass1.kg
     const m2 = mass2.kg
     const r_squared =
       Math.pow(mass1.pos.x - mass2.pos.x, 2) +
       Math.pow(mass1.pos.y - mass2.pos.y, 2)
-    if (r_squared < 1) return { force_x: 0, force_y: 0 }
+    if (r_squared < mass1.r + mass2.r) return { force_x: 0, force_y: 0 }
     const r = Math.sqrt(r_squared)
+    // normalize G to 1 for performance
+    const G = 1
     const force = (G * m1 * m2) / r_squared
     const force_x = (force * (mass2.pos.x - mass1.pos.x)) / r
     const force_y = (force * (mass2.pos.y - mass1.pos.y)) / r

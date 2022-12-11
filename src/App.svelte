@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { baseKg } from './constant'
-  import { Mass } from './mass'
-  import { Sim, type ColorMode, type Mode } from './sim'
-  import Icon from '@iconify/svelte'
+  import { onMount } from "svelte"
+  import { baseKg } from "./constant"
+  import { Mass } from "./mass"
+  import { Sim, type ColorMode, type Mode } from "./sim"
+  import Icon from "@iconify/svelte"
 
-  type Direction = 'up' | 'down' | 'left' | 'right'
+  type Direction = "up" | "down" | "left" | "right"
 
   let canvas: HTMLCanvasElement
   const sim = new Sim()
@@ -18,19 +18,19 @@
 
   let fixedPos = false
 
-  let direction: Direction = 'left'
-  const directions: Direction[] = ['up', 'down', 'left', 'right']
+  let direction: Direction = "left"
+  const directions: Direction[] = ["up", "down", "left", "right"]
 
   let speed = 0
   const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 5]
 
-  let mode: Mode = 'normal'
-  const modes: Mode[] = ['normal', 'combine']
+  let mode: Mode = "normal"
+  const modes: Mode[] = ["normal", "combine"]
 
   let running = true
   $: sim.setRunning(running)
 
-  const colorModes: ColorMode[] = ['size', 'gravity']
+  const colorModes: ColorMode[] = ["size", "gravity"]
   let colorMode: ColorMode = colorModes[0]
   $: {
     sim.setColorMode(colorMode)
@@ -51,8 +51,8 @@
         },
         kg,
         vel: {
-          x: direction === 'left' ? -speed : direction === 'right' ? speed : 0,
-          y: direction === 'up' ? -speed : direction === 'down' ? speed : 0,
+          x: direction === "left" ? -speed : direction === "right" ? speed : 0,
+          y: direction === "up" ? -speed : direction === "down" ? speed : 0,
         },
         fixedPos,
       })
@@ -60,7 +60,7 @@
   }
 
   onMount(() => {
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
@@ -107,12 +107,11 @@
             on:click={() => {
               kgMultiplier = mul
             }}
-            class={mul === kgMultiplier ? 'text-black' : 'text-black/30'}
+            class={mul === kgMultiplier ? "text-black" : "text-black/30"}
             >x{mul}</button
           >
         {/each}
       </div>
-      <span class="text-sm">base mass {baseKg.toLocaleString('en-US')} kg</span>
     </div>
     <div class="flex-col">
       <div class="flex gap-4">
@@ -121,13 +120,13 @@
           on:click={() => {
             fixedPos = true
           }}
-          class={fixedPos ? 'text-black' : 'text-black/30'}>Yes</button
+          class={fixedPos ? "text-black" : "text-black/30"}>Yes</button
         >
         <button
           on:click={() => {
             fixedPos = false
           }}
-          class={!fixedPos ? 'text-black' : 'text-black/30'}>No</button
+          class={!fixedPos ? "text-black" : "text-black/30"}>No</button
         >
       </div>
     </div>
@@ -139,7 +138,7 @@
             on:click={() => {
               speed = sp
             }}
-            class={sp === speed ? 'text-black' : 'text-black/30'}>{sp}</button
+            class={sp === speed ? "text-black" : "text-black/30"}>{sp}</button
           >
         {/each}
       </div>
@@ -154,15 +153,15 @@
             }}
           >
             <Icon
-              icon={dir === 'up'
-                ? 'material-symbols:arrow-upward-rounded'
-                : dir === 'down'
-                ? 'material-symbols:arrow-downward-rounded'
-                : dir === 'left'
-                ? 'material-symbols:arrow-back-rounded'
-                : 'material-symbols:arrow-forward-rounded'}
+              icon={dir === "up"
+                ? "material-symbols:arrow-upward-rounded"
+                : dir === "down"
+                ? "material-symbols:arrow-downward-rounded"
+                : dir === "left"
+                ? "material-symbols:arrow-back-rounded"
+                : "material-symbols:arrow-forward-rounded"}
               class={`text-2xl ${
-                dir === direction ? 'text-black' : 'text-black/30'
+                dir === direction ? "text-black" : "text-black/30"
               }`}
             />
           </button>
@@ -181,7 +180,7 @@
               sim.setMode(m)
               mode = m
             }}
-            class={m === mode ? 'text-black' : 'text-black/30'}>{m}</button
+            class={m === mode ? "text-black" : "text-black/30"}>{m}</button
           >
         {/each}
       </div>
@@ -196,8 +195,8 @@
         >
           <Icon
             icon={running === false
-              ? 'material-symbols:play-arrow-outline-rounded'
-              : 'material-symbols:pause-outline-rounded'}
+              ? "material-symbols:play-arrow-outline-rounded"
+              : "material-symbols:pause-outline-rounded"}
             class="text-2xl"
           />
         </button>
@@ -211,7 +210,7 @@
             on:click={() => {
               colorMode = m
             }}
-            class={m === colorMode ? 'text-black' : 'text-black/30'}>{m}</button
+            class={m === colorMode ? "text-black" : "text-black/30"}>{m}</button
           >
         {/each}
       </div>
@@ -223,5 +222,5 @@
 </div>
 
 <span class="absolute bottom-5 select-none right-5 text-white/90">
-  Particle count: {particleCount.toLocaleString('en-US')}
+  Particle count: {particleCount.toLocaleString("en-US")}
 </span>

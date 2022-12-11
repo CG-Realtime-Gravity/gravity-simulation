@@ -1,1 +1,1 @@
-export const baseKg = 200_000_000
+export const baseKg = 1
