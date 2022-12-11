@@ -15,6 +15,12 @@ export class Vec2 {
     return this.x * this.x + this.y * this.y
   }
 
+  normalizeTo(length: number) {
+    const abs = this.abs()
+    this.x = (this.x / abs) * length
+    this.y = (this.y / abs) * length
+  }
+
   normalize(): Vec2 {
     const abs = this.abs()
     return new Vec2(this.x / abs, this.y / abs)

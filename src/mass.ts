@@ -1,4 +1,4 @@
-import { baseKg } from "./constant"
+import { baseKg, maxAccel } from "./constant"
 import type { ColorMode } from "./sim"
 import { Vec2 } from "./vec2"
 
@@ -10,7 +10,7 @@ export class Mass {
   kg: number
   r: number
   fixedPos: boolean
-  resultant: number
+  acc_abs: number
   deltaV: Vec2
   deltaX: Vec2
 
@@ -32,7 +32,7 @@ export class Mass {
     this.r = Math.log2(this.kg / (baseKg / 2))
     // this.r = 20
     this.fixedPos = config.fixedPos
-    this.resultant = 0
+    this.acc_abs = 0
     this.deltaV = new Vec2(0, 0)
     this.deltaX = new Vec2(0, 0)
   }
@@ -48,21 +48,25 @@ export class Mass {
   draw(
     ctx: CanvasRenderingContext2D,
     mode: ColorMode,
-    forceMin: number,
-    forceMax: number
+    accelMin: number,
+    accelMax: number
   ) {
     if (mode === "size") {
       let hue = Math.floor(((this.r - 1) / (20 - 1)) * 330)
       if (hue > 330) hue = 330
       if (hue < 0) hue = 0
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
-    } else if (mode === "gravity") {
-      const scaledMin = Math.log10(forceMin)
-      const scaledMax = Math.log10(forceMax)
-      const scaledResultant = Math.log10(this.resultant)
-      const hue = Math.floor(
-        ((scaledResultant - scaledMin) / (scaledMax - scaledMin)) * 330
-      )
+    } else if (mode === "acceleration") {
+      let hue: number = 0
+      if (!this.fixedPos) {
+        const scaledMin = Math.log2(accelMin)
+        const scaledMax = Math.log2(accelMax)
+        const scaledAcc = Math.log2(this.acc_abs)
+        hue = Math.floor(
+          ((scaledAcc - scaledMin) / (scaledMax - scaledMin)) * 330
+        )
+      }
+      console.log(hue)
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
     } else {
       ctx.fillStyle = "white"

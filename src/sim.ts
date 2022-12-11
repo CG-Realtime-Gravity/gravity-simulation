@@ -1,8 +1,9 @@
+import { maxAccel } from "./constant"
 import { Mass } from "./mass"
 import { Vec2 } from "./vec2"
 
 export type Mode = "normal" | "combine"
-export type ColorMode = "size" | "gravity"
+export type ColorMode = "size" | "acceleration"
 
 export class Sim {
   private masses: Mass[] = []
@@ -11,8 +12,8 @@ export class Sim {
   private mode: Mode = "normal"
   private running = true
   private colorMode: ColorMode = "size"
-  private resultantMin: number | null = null
-  private resultantMax: number | null = null
+  private accelMin = 0
+  private accelMax = 0
   private particleCountOnChange: (count: number) => void = () => {}
 
   constructor() {}
@@ -37,7 +38,7 @@ export class Sim {
   start(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.ctx = ctx
     this.canvas = canvas
-    setInterval(() => this.update(), 1000 / 1000)
+    setInterval(() => this.update(), 1)
   }
 
   reset() {
@@ -49,7 +50,7 @@ export class Sim {
   }
 
   update() {
-    this.removeMassesOutsideCanvas()
+    this.removeMassesIfTooFar()
     if (!this.running) {
       this.draw()
       return
@@ -57,55 +58,53 @@ export class Sim {
 
     const beforeParticleCount = this.masses.length
 
-    let forceMin: number | null = null
-    let forceMax: number | null = null
+    let accelAbsMin: number | null = null
+    let accelAbsMax: number | null = null
 
     let deleted: number[] = []
     let new_masses: Mass[] = []
     for (const mass of this.masses) {
       if (deleted.includes(mass.id)) continue
       if (mass.fixedPos) continue
-      // const total_force = new Vec2(0, 0)
-      // for (const other_mass of this.masses) {
-      //   if (deleted.includes(mass.id)) break
-      //   if (deleted.includes(other_mass.id)) continue
-      //   if (mass.id === other_mass.id) continue
-      //   // check if mass collides with other_mass
-      //   if (this.mode === "combine") {
-      //     const r = mass.pos.distanceFrom(other_mass.pos)
-      //     const max_r = mass.r + other_mass.r
-      //     if (r <= max_r) {
-      //       // combine masses
-      //       new_masses.push(this.combineMasses(mass, other_mass))
-      //       deleted.push(other_mass.id)
-      //       deleted.push(mass.id)
-      //       continue
-      //     }
-      //   }
-      //   total_force.addBy(this.calc_force(mass, other_mass))
-      // }
 
-      // mass.pos.addBy(mass.vel)
-      // mass.vel.addBy(mass.acc)
-      // total_force.divScalarBy(mass.kg)
-      // mass.acc = total_force
+      const { acc, acc_abs } = this.calcAccel(mass)
+      mass.deltaV = acc
+      mass.deltaX = mass.vel.add(acc)
 
-      // mass.resultant = total_force.abs()
+      for (const other_mass of this.masses) {
+        if (deleted.includes(mass.id)) break
+        if (deleted.includes(other_mass.id)) continue
+        if (mass.id === other_mass.id) continue
+        // check if mass collides with other_mass
+        if (this.mode === "combine") {
+          const r = mass.pos.distanceFrom(other_mass.pos)
+          const max_r = mass.r + other_mass.r
+          if (r <= max_r) {
+            // combine masses
+            new_masses.push(this.combineMasses(mass, other_mass))
+            deleted.push(other_mass.id)
+            deleted.push(mass.id)
+            continue
+          }
+        }
+      }
 
-      // if (forceMin === null || forceMin > mass.resultant)
-      //   forceMin = mass.resultant
-      // if (forceMax === null || forceMax < mass.resultant)
-      //   forceMax = mass.resultant
-      // this.rkIterate(mass, this.masses)
-      this.eulerIterate(mass, this.masses)
+      mass.acc_abs = 0
+      if (!mass.fixedPos) {
+        mass.acc_abs = acc_abs / mass.kg
+        if (accelAbsMin === null || accelAbsMin > mass.acc_abs)
+          accelAbsMin = mass.acc_abs
+        if (accelAbsMax === null || accelAbsMax < mass.acc_abs)
+          accelAbsMax = mass.acc_abs
+      }
     }
 
     for (const mass of this.masses) {
       mass.updatePos()
     }
 
-    this.resultantMin = forceMin
-    this.resultantMax = forceMax
+    this.accelMin = accelAbsMin
+    this.accelMax = accelAbsMax
 
     this.masses = this.masses.filter((mass) => !deleted.includes(mass.id))
     this.masses = this.masses.concat(new_masses)
@@ -118,45 +117,33 @@ export class Sim {
     }
   }
 
-  private rkIterate(mass: Mass, masses: Mass[]) {
-    // update mass acc
-    const k1 = this.calcAccel(mass, mass.pos, masses)
-    const k2 = this.calcAccel(mass, mass.pos.add(k1.mulScalar(0.5)), masses)
-    const k3 = this.calcAccel(mass, mass.pos.add(k2.mulScalar(0.5)), masses)
-    const k4 = this.calcAccel(mass, mass.pos.add(k3), masses)
-    const acc = k1
-      .add(k2.mulScalar(2))
-      .add(k3.mulScalar(2))
-      .add(k4)
-      .divScalar(6)
-    mass.acc = acc
-  }
-
-  private eulerIterate(mass: Mass, masses: Mass[]) {
-    const accel = this.calcAccel(mass, mass.pos, masses)
-    mass.deltaV = accel
-    mass.deltaX = mass.vel.add(accel)
-  }
-
-  private removeMassesOutsideCanvas() {
+  private removeMassesIfTooFar() {
+    const tooFarX = this.canvas.width * 4
+    const tooFarY = this.canvas.height * 4
+    const before = this.masses.length
     this.masses = this.masses.filter((mass) => {
-      return (
-        mass.pos.x > 0 &&
-        mass.pos.x < this.canvas.width &&
-        mass.pos.y > 0 &&
-        mass.pos.y < this.canvas.height
-      )
+      return Math.abs(mass.pos.x) < tooFarX && Math.abs(mass.pos.y) < tooFarY
     })
+    const after = this.masses.length
+    if (before !== after) {
+      this.particleCountOnChange(after)
+    }
   }
 
-  private calcAccel(mass: Mass, pos: Vec2, masses: Mass[]): Vec2 {
+  private calcAccel(mass: Mass) {
     const total_force = new Vec2(0, 0)
-    for (const other_mass of masses) {
+    for (const other_mass of this.masses) {
       if (mass.id === other_mass.id) continue
       const force = this.calc_force(mass, other_mass)
       total_force.addBy(force)
     }
-    return total_force.divScalar(mass.kg)
+    const acc = total_force.divScalar(mass.kg)
+    let acc_abs = acc.abs()
+    if (acc_abs > maxAccel) {
+      acc.normalizeTo(maxAccel)
+      acc_abs = maxAccel
+    }
+    return { acc, acc_abs }
   }
 
   private calc_force(mass1: Mass, mass2: Mass): Vec2 {
@@ -174,12 +161,12 @@ export class Sim {
     return new Vec2(force_x, force_y)
   }
 
-  private bounceMassesOffScreen(mass: Mass) {
-    if (!(mass.pos.x > 0 && mass.pos.x < this.canvas.width))
-      mass.vel.x = -mass.vel.x
-    if (!(mass.pos.y > 0 && mass.pos.y < this.canvas.height))
-      mass.vel.y = -mass.vel.y
-  }
+  // private bounceMassesOffScreen(mass: Mass) {
+  //   if (!(mass.pos.x > 0 && mass.pos.x < this.canvas.width))
+  //     mass.vel.x = -mass.vel.x
+  //   if (!(mass.pos.y > 0 && mass.pos.y < this.canvas.height))
+  //     mass.vel.y = -mass.vel.y
+  // }
 
   private combineMasses(mass1: Mass, mass2: Mass) {
     const m1 = mass1.kg
@@ -196,7 +183,7 @@ export class Sim {
   private draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for (const mass of this.masses) {
-      mass.draw(this.ctx, this.colorMode, this.resultantMin, this.resultantMax)
+      mass.draw(this.ctx, this.colorMode, this.accelMin, this.accelMax)
     }
   }
 }

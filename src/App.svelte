@@ -13,7 +13,7 @@
 
   let dragging = false
 
-  const kgMultiplierOptions = [1, 5, 10, 50, 100, 500, 1000, 100000]
+  const kgMultiplierOptions = [1, 3, 5, 10, 50, 75, 100, 500, 1000, 10000]
   let kgMultiplier = kgMultiplierOptions[0]
   $: kg = baseKg * kgMultiplier
 
@@ -23,7 +23,7 @@
   const directions: Direction[] = ["up", "down", "left", "right"]
 
   let speed = 0
-  const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 5]
+  const speedOptions = [0, 0.1, 0.2, 0.3, 0.5, 1, 2, 3, 5]
 
   let mode: Mode = "normal"
   const modes: Mode[] = ["normal", "combine"]
@@ -31,7 +31,7 @@
   let running = true
   $: sim.setRunning(running)
 
-  const colorModes: ColorMode[] = ["size", "gravity"]
+  const colorModes: ColorMode[] = ["size", "acceleration"]
   let colorMode: ColorMode = colorModes[0]
   $: {
     sim.setColorMode(colorMode)
@@ -67,17 +67,17 @@
     sim.addMass(
       new Mass({
         fixedPos: false,
-        kg: baseKg * 100,
+        kg: baseKg * 50,
         pos: new Vec2(canvas.width / 2, canvas.height / 2),
-        vel: new Vec2(0, 0),
+        vel: new Vec2(-0.4, 0),
       })
     )
     sim.addMass(
       new Mass({
         fixedPos: false,
-        kg: 5,
-        pos: new Vec2(canvas.width / 2, canvas.height / 2 + 300),
-        vel: new Vec2(0.5, 0),
+        kg: baseKg * 50,
+        pos: new Vec2(canvas.width / 2, canvas.height / 2 + 150),
+        vel: new Vec2(0.4, 0),
       })
     )
   })
