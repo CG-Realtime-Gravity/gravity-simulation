@@ -43,6 +43,7 @@ export class Sim {
 
   reset() {
     this.masses = []
+    this.particleCountOnChange(this.masses.length)
   }
 
   setParticleCountOnChange(cb: (count: number) => void) {
