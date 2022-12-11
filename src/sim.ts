@@ -113,6 +113,7 @@ export class Sim {
   }
 
   private removeMassesOutsideCanvas() {
+    const beforeParticleCount = this.masses.length
     this.masses = this.masses.filter((mass) => {
       return (
         mass.pos.x > 0 &&
@@ -121,6 +122,10 @@ export class Sim {
         mass.pos.y < this.canvas.height
       )
     })
+    const afterParticleCount = this.masses.length
+    if (beforeParticleCount !== afterParticleCount) {
+      this.particleCountOnChange(afterParticleCount)
+    }
   }
 
   private calc_force(mass1: Mass, mass2: Mass): Vec2 {
