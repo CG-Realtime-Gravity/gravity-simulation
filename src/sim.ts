@@ -27,6 +27,11 @@ export class Sim {
 
   setDrawHistory(drawHistory: boolean) {
     this.drawHistory = drawHistory
+    if (!drawHistory) {
+      for (const mass of this.masses) {
+        mass.clearHistory()
+      }
+    }
   }
 
   setHistoryLength(len: number) {
