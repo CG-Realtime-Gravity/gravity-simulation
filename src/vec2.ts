@@ -15,6 +15,12 @@ export class Vec2 {
     return this.x * this.x + this.y * this.y
   }
 
+  normalizeTo(length: number) {
+    const abs = this.abs()
+    this.x = (this.x / abs) * length
+    this.y = (this.y / abs) * length
+  }
+
   normalize(): Vec2 {
     const abs = this.abs()
     return new Vec2(this.x / abs, this.y / abs)
@@ -57,6 +63,15 @@ export class Vec2 {
     this.y *= other.y
   }
 
+  mulScalar(scalar: number): Vec2 {
+    return new Vec2(this.x * scalar, this.y * scalar)
+  }
+
+  mulScalarBy(scalar: number): void {
+    this.x *= scalar
+    this.y *= scalar
+  }
+
   divElemWise(other: Vec2): Vec2 {
     return new Vec2(this.x / other.x, this.y / other.y)
   }
@@ -64,6 +79,10 @@ export class Vec2 {
   divElemWiseBy(other: Vec2): void {
     this.x /= other.x
     this.y /= other.y
+  }
+
+  divScalar(scalar: number): Vec2 {
+    return new Vec2(this.x / scalar, this.y / scalar)
   }
 
   divScalarBy(scalar: number) {
