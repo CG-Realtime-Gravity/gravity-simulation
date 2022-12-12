@@ -15,6 +15,7 @@ export class Sim {
   private accelMin = 0
   private accelMax = 0
   private particleCountOnChange: (count: number) => void = () => {}
+  private onTimeElapsed: (t: number) => void = () => {}
   private drawHistory = true
   private elapsedTime = 0
   private historyLen = 100
@@ -23,6 +24,10 @@ export class Sim {
 
   setMode(mode: Mode) {
     this.mode = mode
+  }
+
+  setOnTimeElapsed(cb: (t: number) => void) {
+    this.onTimeElapsed = cb
   }
 
   setDrawHistory(drawHistory: boolean) {
@@ -62,6 +67,7 @@ export class Sim {
     setInterval(() => {
       this.update()
       this.elapsedTime += 1
+      this.onTimeElapsed(this.elapsedTime)
     }, 1)
   }
 

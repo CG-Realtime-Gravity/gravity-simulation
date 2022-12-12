@@ -50,6 +50,15 @@
 
   let hasOwnGravity = true
 
+  /**
+   * 1 sim second = 1 real ms second
+   */
+  let elapsedSimMins = 0
+  sim.setOnTimeElapsed((time) => {
+    elapsedSimMins = time / 60
+  })
+  $: elapsedSimHrs = elapsedSimMins / 60
+
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
@@ -305,7 +314,8 @@
             navigator.clipboard.writeText(preset)
             alert("Preset copied to clipboard")
           }}
-          class="flex w-content underline hover:font-medium">get preset</button
+          class="flex w-content underline hover:font-medium"
+          >export preset</button
         >
         <button
           on:click={() => {
@@ -324,5 +334,9 @@
 </div>
 
 <span class="absolute bottom-5 select-none right-5 text-white/90">
-  {particleCount.toLocaleString("en-US")}
+  <div>
+    {elapsedSimHrs.toFixed(2)} hrs ({elapsedSimMins.toFixed(0).padStart(2, " ")}
+    mins)
+  </div>
+  <div class="text-end">{particleCount.toLocaleString("en-US")}</div>
 </span>
