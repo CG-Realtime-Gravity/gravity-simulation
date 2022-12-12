@@ -235,7 +235,7 @@
     </div>
     <div class="flex-col">
       <div class="flex gap-4">
-        <h2 class="font-bold">Simulation:</h2>
+        <h2 class="font-bold">Playback:</h2>
         <button
           on:click={() => {
             running = !running
