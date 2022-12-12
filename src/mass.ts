@@ -13,7 +13,7 @@ export class Mass {
   acc_abs: number
   deltaV: Vec2
   deltaX: Vec2
-  history: [number, Vec2][]
+  history: [number, number, number][] // [time, x, y]
   hasGravity: boolean
 
   static count = 0
@@ -86,7 +86,7 @@ export class Mass {
 
     if (!useHistory) return
 
-    this.history.push([elapsedTime, this.pos.clone()])
+    this.history.push([elapsedTime, this.pos.x, this.pos.y])
     // shift history if the elapsed time passes 1000 from the first element
   }
 
@@ -128,7 +128,7 @@ export class Mass {
       ctx.beginPath()
       // draw thin line
       ctx.lineWidth = 0.1
-      ctx.arc(h[1].x, h[1].y, 1, 0, 2 * Math.PI)
+      ctx.arc(h[1], h[2], 1, 0, 2 * Math.PI)
       ctx.stroke()
     }
   }
