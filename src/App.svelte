@@ -44,8 +44,8 @@
 
   let drawHistory = true
   $: sim.setDrawHistory(drawHistory)
-  const historyLenOptions = [100, 250, 500, 1000]
-  let historyLen = historyLenOptions[0]
+  const historyLenOptions = [25, 50, 100, 250, 500, 1000]
+  let historyLen = historyLenOptions[1]
   $: sim.setHistoryLength(historyLen)
 
   let hasOwnGravity = true
