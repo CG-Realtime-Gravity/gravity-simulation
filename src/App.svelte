@@ -281,7 +281,7 @@
         >
       </div>
       <div class="flex gap-4">
-        <span class="font-bold">History length</span>
+        <span class="font-bold">History Length</span>
         {#each historyLenOptions as l}
           <button
             on:click={() => {
