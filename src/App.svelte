@@ -121,7 +121,7 @@
 />
 
 <div
-  class="absolute flex-col bottom-5 select-none left-5 bg-white/5 hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-5"
+  class="absolute flex-col bottom-5 select-none left-5 bg-transparent hover:bg-white/90 transition-all rounded flex w-fit px-4 py-2 gap-5"
 >
   <div class="flex-col space-y-2">
     <h1 class="font-bold text-lg">Particle Configuration</h1>
