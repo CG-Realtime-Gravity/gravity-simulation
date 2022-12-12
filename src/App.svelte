@@ -300,19 +300,20 @@
       <div class="flex gap-4">
         <button
           on:click={() => {
-            const presetJson = prompt("Paste preset JSON")
-            sim.importPreset(presetJson)
-          }}
-          class="flex w-content hover:underline">import preset</button
-        >
-        <button
-          on:click={() => {
             const preset = sim.generatePresetJSON()
             // copy to clipboard
             navigator.clipboard.writeText(preset)
             alert("Preset copied to clipboard")
           }}
-          class="flex w-content hover:underline">get preset</button
+          class="flex w-content underline hover:font-medium">get preset</button
+        >
+        <button
+          on:click={() => {
+            const presetJson = prompt("Paste preset JSON")
+            sim.importPreset(presetJson)
+          }}
+          class="flex w-content underline hover:font-medium"
+          >import preset</button
         >
       </div>
     </div>
