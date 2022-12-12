@@ -151,6 +151,10 @@ export class Sim {
     const tooFarX = this.canvas.width * 3
     const tooFarY = this.canvas.height * 3
     const before = this.masses.length
+
+    // if not more than 200 particles, don't remove
+    if (before < 200) return
+
     this.masses = this.masses.filter((mass) => {
       return Math.abs(mass.pos.x) < tooFarX && Math.abs(mass.pos.y) < tooFarY
     })
