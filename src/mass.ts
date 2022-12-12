@@ -18,6 +18,17 @@ export class Mass {
 
   static count = 0
 
+  static fromPreset(mass: Mass) {
+    const m = new Mass({
+      kg: mass.kg,
+      pos: new Vec2(mass.pos.x, mass.pos.y),
+      fixedPos: mass.fixedPos,
+      hasGravity: mass.hasGravity,
+      vel: new Vec2(mass.vel.x, mass.vel.y),
+    })
+    return m
+  }
+
   constructor(
     public config: {
       kg: number
@@ -103,7 +114,6 @@ export class Mass {
           hue = Math.floor(((scaledAcc - scaledMin) / scaledDiff) * 330)
         }
       }
-      console.log(hue)
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
     } else {
       ctx.fillStyle = "white"

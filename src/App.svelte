@@ -288,6 +288,24 @@
         {/each}
       </div>
     </div>
+    <div class="flex gap-4">
+      <button
+        on:click={() => {
+          const presetJson = prompt("Paste preset JSON")
+          sim.importPreset(presetJson)
+        }}
+        class="flex w-content hover:underline">import preset</button
+      >
+      <button
+        on:click={() => {
+          const preset = sim.generatePresetJSON()
+          // copy to clipboard
+          navigator.clipboard.writeText(preset)
+          alert("Preset copied to clipboard")
+        }}
+        class="flex w-content hover:underline">get preset</button
+      >
+    </div>
     <button on:click={() => sim.reset()} class="flex w-content text-red-500"
       >clear</button
     >

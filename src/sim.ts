@@ -74,6 +74,25 @@ export class Sim {
     this.particleCountOnChange = cb
   }
 
+  generatePresetJSON() {
+    const strippedMasses = this.masses.map((mass) => ({
+      kg: mass.kg,
+      pos: mass.pos,
+      fixedPos: mass.fixedPos,
+      hasGravity: mass.hasGravity,
+      vel: mass.vel,
+    }))
+    return JSON.stringify(strippedMasses)
+  }
+
+  importPreset(json: string) {
+    const masses = JSON.parse(json)
+    for (const mass of masses) {
+      this.addMass(Mass.fromPreset(mass))
+    }
+    this.particleCountOnChange(this.masses.length)
+  }
+
   update() {
     this.removeMassesIfTooFar()
     if (!this.running) {
