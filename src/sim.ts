@@ -3,7 +3,7 @@ import { Mass } from "./mass"
 import { Vec2 } from "./vec2"
 
 export type Mode = "normal" | "combine"
-export type ColorMode = "size" | "acceleration"
+export type ColorMode = "size" | "acceleration" | "none"
 
 export class Sim {
   private masses: Mass[] = []

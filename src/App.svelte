@@ -31,7 +31,7 @@
   let running = true
   $: sim.setRunning(running)
 
-  const colorModes: ColorMode[] = ["acceleration", "size"]
+  const colorModes: ColorMode[] = ["acceleration", "size", "none"]
   let colorMode: ColorMode = colorModes[0]
   $: {
     sim.setColorMode(colorMode)
@@ -271,7 +271,8 @@
           on:click={() => {
             drawHistory = false
           }}
-          class={!drawHistory ? "text-black" : "text-black/30"}>No</button
+          class={!drawHistory ? "text-black" : "text-black/30"}
+          >No (for performance)</button
         >
       </div>
       <div class="flex gap-4">
