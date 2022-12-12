@@ -94,6 +94,11 @@
   })
 </script>
 
+<svelte:head>
+  <title>Gravity Simulation</title>
+  <meta name="description" content="A simple gravity simulator" />
+</svelte:head>
+
 <canvas
   on:mousedown={() => {
     dragging = true
@@ -288,23 +293,28 @@
         {/each}
       </div>
     </div>
-    <div class="flex gap-4">
-      <button
-        on:click={() => {
-          const presetJson = prompt("Paste preset JSON")
-          sim.importPreset(presetJson)
-        }}
-        class="flex w-content hover:underline">import preset</button
-      >
-      <button
-        on:click={() => {
-          const preset = sim.generatePresetJSON()
-          // copy to clipboard
-          navigator.clipboard.writeText(preset)
-          alert("Preset copied to clipboard")
-        }}
-        class="flex w-content hover:underline">get preset</button
-      >
+
+    <div class="flex-col gap-4">
+      <div>G = 1, base mass = {baseKg} kg, 1 px = 1 meter</div>
+
+      <div class="flex gap-4">
+        <button
+          on:click={() => {
+            const presetJson = prompt("Paste preset JSON")
+            sim.importPreset(presetJson)
+          }}
+          class="flex w-content hover:underline">import preset</button
+        >
+        <button
+          on:click={() => {
+            const preset = sim.generatePresetJSON()
+            // copy to clipboard
+            navigator.clipboard.writeText(preset)
+            alert("Preset copied to clipboard")
+          }}
+          class="flex w-content hover:underline">get preset</button
+        >
+      </div>
     </div>
     <button on:click={() => sim.reset()} class="flex w-content text-red-500"
       >clear</button
@@ -313,5 +323,5 @@
 </div>
 
 <span class="absolute bottom-5 select-none right-5 text-white/90">
-  Particle count: {particleCount.toLocaleString("en-US")}
+  {particleCount.toLocaleString("en-US")}
 </span>
