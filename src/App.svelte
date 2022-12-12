@@ -48,6 +48,8 @@
   let historyLen = historyLenOptions[0]
   $: sim.setHistoryLength(historyLen)
 
+  let hasOwnGravity = true
+
   const addMass = (clientX: number, clientY: number) => {
     let rect = canvas.getBoundingClientRect()
     sim.addMass(
@@ -59,6 +61,7 @@
           direction === "up" ? -speed : direction === "down" ? speed : 0
         ),
         fixedPos,
+        hasGravity: hasOwnGravity,
       })
     )
   }
@@ -76,6 +79,7 @@
         kg: baseKg * 50,
         pos: new Vec2(canvas.width / 2, canvas.height / 2),
         vel: new Vec2(-0.4, 0),
+        hasGravity: true,
       })
     )
     sim.addMass(
@@ -84,6 +88,7 @@
         kg: baseKg * 50,
         pos: new Vec2(canvas.width / 2, canvas.height / 2 + 150),
         vel: new Vec2(0.4, 0),
+        hasGravity: true,
       })
     )
   })
@@ -187,6 +192,23 @@
             />
           </button>
         {/each}
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="flex gap-4">
+        <h2 class="font-bold">Has Gravity:</h2>
+        <button
+          on:click={() => {
+            hasOwnGravity = true
+          }}
+          class={hasOwnGravity ? "text-black" : "text-black/30"}>Yes</button
+        >
+        <button
+          on:click={() => {
+            hasOwnGravity = false
+          }}
+          class={!hasOwnGravity ? "text-black" : "text-black/30"}>No</button
+        >
       </div>
     </div>
   </div>

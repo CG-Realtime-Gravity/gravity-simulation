@@ -14,6 +14,7 @@ export class Mass {
   deltaV: Vec2
   deltaX: Vec2
   history: [number, Vec2][]
+  hasGravity: boolean
 
   static count = 0
 
@@ -23,15 +24,17 @@ export class Mass {
       pos: Vec2
       vel: Vec2
       fixedPos: boolean
+      hasGravity: boolean
     }
   ) {
     this.id = Mass.count++
     this.pos = config.pos
     this.kg = config.kg
     this.vel = config.vel
+    this.hasGravity = config.hasGravity
+
     this.acc = new Vec2(0, 0)
     this.r = Math.log2(this.kg / (baseKg / 2))
-    // this.r = 20
     this.fixedPos = config.fixedPos
     this.acc_abs = 0
     this.deltaV = new Vec2(0, 0)

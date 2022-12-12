@@ -104,7 +104,7 @@ export class Sim {
         if (this.mode === "combine") {
           const r = mass.pos.distanceFrom(other_mass.pos)
           const max_r = mass.r + other_mass.r
-          if (r <= max_r) {
+          if (r <= max_r && (mass.hasGravity || other_mass.hasGravity)) {
             // combine masses
             new_masses.push(this.combineMasses(mass, other_mass))
             deleted.push(other_mass.id)
@@ -163,7 +163,7 @@ export class Sim {
   private calcAccel(mass: Mass) {
     const total_force = new Vec2(0, 0)
     for (const other_mass of this.masses) {
-      if (mass.id === other_mass.id) continue
+      if (mass.id === other_mass.id || !other_mass.hasGravity) continue
       const force = this.calc_force(mass, other_mass)
       total_force.addBy(force)
     }
@@ -207,7 +207,13 @@ export class Sim {
     const v = new Vec2((m1 * v1.x + m2 * v2.x) / m, (m1 * v1.y + m2 * v2.y) / m)
     const pos = m1 > m2 ? mass1.pos : mass2.pos
     const fixedPos = m1 > m2 ? mass1.fixedPos : mass2.fixedPos
-    return new Mass({ pos: pos, vel: v, kg: m, fixedPos: fixedPos })
+    return new Mass({
+      pos: pos,
+      vel: v,
+      kg: m,
+      fixedPos: fixedPos,
+      hasGravity: true,
+    })
   }
 
   private draw() {
